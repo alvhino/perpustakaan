@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Pinjam extends Model
 {
     use HasFactory;
-    protected $table = 'user';
+    protected $table = 'pinjam';
     protected $primaryKey = 'id';
     protected $fillable=array(
-    'username',
-    'password',
-    'role',
+    'id_user',
+    'id_buku',
+    'status',
 );
 }

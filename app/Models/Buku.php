@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pinjam extends Model
+class Buku extends Model
 {
     use HasFactory;
-    protected $table = 'user';
+    protected $table = 'buku';
     protected $primaryKey = 'id';
     protected $fillable=array(
-    'username',
-    'password',
-    'role',
+    'judul',
+    'sampul',
+    'selengkapnya',
+    'id_kategori',
 );
+
 }

@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pinjam extends Model
+class Kategori extends Model
 {
     use HasFactory;
-    protected $table = 'user';
+    protected $table = 'kategoroi';
     protected $primaryKey = 'id';
     protected $fillable=array(
-    'username',
-    'password',
-    'role',
+    'nama_kategori',
 );
 }
