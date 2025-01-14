@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('id_user');
             $table->foreignId('id_buku');
             $table->enum('status', ['pinjam', 'kembali']);
-            $table->date('tanggal');
             $table->timestamps();
         });
     }
