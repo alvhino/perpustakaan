@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_kategori');
             $table->string('judul');
-            $table->binary('sampul')->nullable();
+            $table->string('sampul')->nullable();
             $table->jsonb('selengkapnya');
             $table->timestamps();
         });
