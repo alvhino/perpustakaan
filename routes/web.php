@@ -4,6 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PerpusController;
+
+
+
+
+
+
+
 Route::get('/', function () {
     return view('template.index');
 });
@@ -19,6 +27,8 @@ Route::get('/user/create', [UserController::class, 'create'])->name('user.create
 Route::post('/user', [UserController::class, 'store'])->name('user.store');
 Route::get('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.destroy');
 
+//halaman awal
+Route::get('/perpus', [PerpusController::class, 'index'])->name('perpus.index');
 
 
 //buku
