@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\UserController;
-Route::get('/', function () {
-    return view('template.index');
+Route::get('/kuy', function () {
+    return view('index');
 });
 
 Route::get('/dashboard', function () {
