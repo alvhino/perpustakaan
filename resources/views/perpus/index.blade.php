@@ -198,12 +198,12 @@
         </div>
 
         <!-- Book Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 auto-rows-fr">
     @foreach ($bukus as $buku)
     <div class="book-card group">
-        <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300">
+        <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
             <!-- Cover Image Placeholder -->
-            <div class="relative overflow-hidden h-56 bg-gray-100">
+            <div class="relative overflow-hidden bg-gray-100 aspect-w-3 aspect-h-4">
                 @if ($buku->sampul ?? false)
                 <img 
                     src="{{ url('assets/sampul/' . $buku->sampul) }}" 
@@ -217,7 +217,7 @@
                 @endif
             </div>
 
-            <div class="p-4">
+            <div class="p-4 flex flex-col flex-grow">
                 <!-- Book Title -->
                 <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                     {{ $buku->judul }}
@@ -237,7 +237,7 @@
                 </p>
 
                 <!-- Synopsis -->
-                <p class="text-sm text-gray-600 mt-2 line-clamp-3">
+                <p class="text-sm text-gray-600 mt-2 line-clamp-3 flex-grow">
                     <strong>Sinopsis:</strong> {{ $buku->selengkapnya->sinopsis ?? 'Tidak tersedia' }}
                 </p>
 
