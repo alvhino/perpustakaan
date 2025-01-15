@@ -45,7 +45,7 @@
                             <td>{{ $buku->selengkapnya->tahun ?? 'Tidak tersedia' }}</td>
                             <td>
                                 <a href="{{ url('buku/edit', $buku->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="{{ url('buku/destroy', $buku->id) }}" 
+                                <a href="{{ url('buku/hapus', $buku->id) }}" 
                                 class="btn btn-danger btn-sm" 
                                 onclick="return confirm('Yakin ingin menghapus buku ini?');">
                                 Hapus</a>
