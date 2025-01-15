@@ -41,12 +41,14 @@ class PerpusController extends Controller
             $buku->selengkapnya = json_decode($buku->selengkapnya);
             return $buku;
         });
+
+        $totalBuku = Buku::count();
     
         // Ambil semua kategori
         $categories = Kategori::all();
     
         // Kirim data ke view
-        return view('perpus.index', compact('bukus', 'sort', 'categories', 'selectedCategory'));
+        return view('perpus.index', compact('bukus', 'sort', 'categories', 'selectedCategory', 'totalBuku'));
     }
     
     

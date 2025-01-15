@@ -149,8 +149,9 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm text-gray-500">Total Buku</p>
-                        <p class="text-lg font-semibold">2,459</p>
+                        <p class="text-lg font-semibold">{{ $totalBuku }}</p>
                     </div>
+
                 </div>
             </div>
             
@@ -162,36 +163,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm text-gray-500">Pembaca Aktif</p>
+                        <p class="text-sm text-gray-500">Jumlah pemba</p>
                         <p class="text-lg font-semibold">1,287</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow duration-300">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Dipinjam</p>
-                        <p class="text-lg font-semibold">328</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow duration-300">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm text-gray-500">Trending</p>
-                        <p class="text-lg font-semibold">95</p>
                     </div>
                 </div>
             </div>
@@ -203,7 +176,7 @@
     <div class="book-card group">
         <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
             <!-- Cover Image Placeholder -->
-            <div class="relative overflow-hidden bg-gray-100 aspect-w-3 aspect-h-4">
+            <div class="relative bg-gray-100 w-full h-64 overflow-hidden">
                 @if ($buku->sampul ?? false)
                 <img 
                     src="{{ url('assets/sampul/' . $buku->sampul) }}" 
@@ -259,6 +232,8 @@
     </div>
     @endforeach
 </div>
+
+
 
 
         <!-- Enhanced Pagination -->
