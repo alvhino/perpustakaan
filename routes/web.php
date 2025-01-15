@@ -31,8 +31,8 @@ Route::get('/buku/hapus/{id}', [BukuController::class, 'destroy']);
 
 //kategori
 Route::get('/kategori', [KategoriController::class, 'index']);
-Route::get('/kategori/tambah', [KategoriController::class, 'create']);
-Route::post('/kategori/tambah', [KategoriController::class, 'store']);
-Route::get('/kategori/edit/{id}', [KategoriController::class, 'edit']);
-Route::post('/kategori/update/{id}', [KategoriController::class, 'update']);
-Route::get('/kategori/hapus/{id}', [KategoriController::class, 'destroy']);
+Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
+Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
+Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+Route::get('/kategori/{id}/delete', [KategoriController::class, 'destroy'])->name('kategori.destroy');

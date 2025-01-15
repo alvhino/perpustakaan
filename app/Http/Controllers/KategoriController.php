@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Kategori;
 
 class KategoriController extends Controller
 {
@@ -11,7 +12,8 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        //
+        $kategoris = Kategori::all();
+        return view('kategori.index', compact('kategoris'));
     }
 
     /**
@@ -19,16 +21,23 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        //
+        return view('kategori.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Simpan data baru
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
+    
+        Kategori::create([
+            'nama_kategori' => $request->nama_kategori,
+        ]);
+    
+        return redirect('/kategori')->with('success', 'Kategori berhasil ditambahkan.');
     }
+    
 
     /**
      * Display the specified resource.
@@ -41,17 +50,30 @@ class KategoriController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $kategori = Kategori::findOrFail($id); // Ambil data kategori berdasarkan ID
+        return view('kategori.edit', compact('kategori'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Memperbarui data kategori
+    public function update(Request $request, $id)
     {
-        //
+        // Validasi data
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
+
+        // Temukan data kategori
+        $kategori = Kategori::findOrFail($id);
+
+        // Update data
+        $kategori->update([
+            'nama_kategori' => $request->nama_kategori,
+        ]);
+
+        // Redirect dengan pesan sukses
+        return redirect('/kategori')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
