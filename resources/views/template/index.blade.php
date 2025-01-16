@@ -74,6 +74,12 @@
             </a>
           </li>
           <li class="nav-item ">
+            <a class="nav-link" href="/pinjam">
+              <i class="material-icons">library_books</i>
+              <p>Peminjaman</p>
+            </a>
+          </li>
+          <li class="nav-item ">
           <!-- <li class="nav-item active-pro ">
                 <a class="nav-link" href="./upgrade.html">
                     <i class="material-icons">unarchive</i>

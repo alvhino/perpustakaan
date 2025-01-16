@@ -41,10 +41,12 @@ Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('ka
 Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
 Route::get('/kategori/{id}/delete', [KategoriController::class, 'destroy'])->name('kategori.destroy');
 
+//pinjam
 Route::get('/pinjam', [PinjamController::class, 'index']);
 Route::get('/pinjam/tambah', [PinjamController::class, 'create']);
 Route::post('/pinjam/tambah', [PinjamController::class, 'store']);
 Route::get('/pinjam/edit/{id}', [PinjamController::class, 'edit']);
-Route::post('/pinjam/update/{id}', [PinjamController::class, 'update']);
+Route::post('/pinjam/update/{id}', [PinjamController::class, 'up    date']);
 Route::get('/pinjam/hapus/{id}', [PinjamController::class, 'destroy']);
+Route::post('/pinjam/update-status/{id}', [PinjamController::class, 'updateStatus']);
 

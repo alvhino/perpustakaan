@@ -15,4 +15,9 @@ class User extends Model
     'password',
     'role',
 );
+
+public function pinjam()
+{
+    return $this->hasMany(pinjam::class, 'id_user');
+}
 }
