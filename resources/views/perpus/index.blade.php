@@ -479,7 +479,42 @@
             }
         });
 
-        function confirmPinjam(id) {
+        
+
+     // Smooth scroll behavior for anchor links
+     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Show/hide back to top button based on scroll position
+    window.addEventListener('scroll', function () {
+        const backToTopButton = document.querySelector('#back-to-top');
+        if (backToTopButton) {
+            if (window.pageYOffset > 100) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        }
+    });
+
+    // SweetAlert for success message
+    @if (session('success'))
+        Swal.fire({
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    @endif
+
+    // Confirm Pinjam Buku
+    function confirmPinjam(id) {
         Swal.fire({
             title: 'Pinjam Buku?',
             text: "Apakah Anda yakin ingin meminjam buku ini?",
@@ -495,6 +530,7 @@
         });
     }
 
+    // Confirm Kembalikan Buku
     function confirmKembalikan(id) {
         Swal.fire({
             title: 'Kembalikan Buku?',

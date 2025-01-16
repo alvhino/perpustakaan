@@ -205,7 +205,9 @@ class PerpusController extends Controller
             ]);
         }
     
-        return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
+        session()->flash('success', 'Berhasil meminjam buku!');
+    return redirect()->back();
+
     }
     
     public function kembalikanBuku(Request $request, $id)
