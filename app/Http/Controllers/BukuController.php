@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\DB;
 class BukuController extends Controller
 {
    
-    public function index()
+    public function index(Request $request)
 { 
+    if (!$request->session()->has('username')) {
+        return redirect('/');
+    }
     $bukus = Buku::with('kategori')->get()->map(function ($buku) {
         $buku->selengkapnya = json_decode($buku->selengkapnya);
         return $buku;
@@ -21,8 +24,11 @@ class BukuController extends Controller
 }
 
 
-    public function create()
+    public function create(Request $request)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         $kategoris = Kategori::all(); 
         return view('buku.create', compact('kategoris'));
     }
@@ -95,8 +101,11 @@ class BukuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         $buku = Buku::find($id);
     
         if (!$buku) {
@@ -187,6 +196,9 @@ class BukuController extends Controller
      */
     public function destroy(string $id)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         // Cari data buku berdasarkan ID
         $buku = DB::table('buku')->where('id', $id)->first();
     

@@ -10,8 +10,11 @@ class KategoriController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         $kategoris = Kategori::all();
         return view('kategori.index', compact('kategoris'));
     }
@@ -19,8 +22,11 @@ class KategoriController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         return view('kategori.create');
     }
 
@@ -50,8 +56,11 @@ class KategoriController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
         $kategori = Kategori::findOrFail($id); // Ambil data kategori berdasarkan ID
         return view('kategori.edit', compact('kategori'));
     }

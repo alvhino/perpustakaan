@@ -15,6 +15,10 @@ class PerpusController extends Controller
      */
     public function index(Request $request)
     {
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
+        $username = $request->session()->get('username');
         $sort = $request->input('sort', 'newest');
         $selectedCategory = $request->input('category', 'all');
         $searchQuery = $request->input('searchQuery', ''); 
@@ -75,6 +79,7 @@ class PerpusController extends Controller
             'totalBuku' => $totalBuku,
             'jumlahPembaca' => $jumlahPembaca,
             'rekomendasiBuku' => $rekomendasiBuku,
+            'username' => $username,
         ]);
     }
     

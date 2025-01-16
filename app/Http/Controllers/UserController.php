@@ -20,10 +20,50 @@ class UserController extends Controller
     {
         return view('index');
     }
-    public function loginpost()
+    
+    public function dashboard(Request $request)
     {
-        return view('index');
+        if (!$request->session()->has('username')) {
+            return redirect('/');
+        }
+        return view('template.index');
     }
+    public function loginpost(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+    
+        // Ambil data user berdasarkan username
+        $user = User::where('username', $request->username)->first();
+    
+        if ($user) {
+            // Cek password
+            if (Hash::check($request->password, $user->password)) {
+                // Simpan username ke session
+                $request->session()->put('username', $user->username);
+    
+                // Arahkan berdasarkan role
+                if ($user->role === 'admin') {
+                    return redirect('/dashboard')->with('success', 'Login berhasil sebagai Admin!');
+                } elseif ($user->role === 'user') {
+                    return redirect('/perpus')->with('success', 'Login berhasil sebagai User!');
+                } else {
+                    // Jika role tidak dikenali
+                    return redirect('/login')->with('error', 'Role tidak dikenali.');
+                }
+            } else {
+                // Jika password salah
+                return redirect()->back()->with('error', 'Username atau password salah.');
+            }
+        } else {
+            // Jika user tidak ditemukan
+            return redirect()->back()->with('error', 'Username atau password salah.');
+        }
+    }
+    
     /**
      * Show the form for creating a new resource.
      */
