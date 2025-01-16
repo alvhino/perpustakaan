@@ -42,38 +42,31 @@
 
                 <!-- Search Bar with Animation -->
                 <div class="flex items-center flex-1 max-w-lg mx-4">
-                    <div class="w-full relative">
-                        <input 
-                            type="text" 
-                            x-model="searchQuery"
-                            placeholder="Cari judul buku, penulis, atau kategori..." 
-                            class="w-full px-4 py-2 rounded-full border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/90"
-                        >
-                        <span class="absolute right-3 top-2.5 text-gray-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
+    <div class="w-full relative">
+        <form method="GET" action="{{ route('perpus.index') }}">
+            <input 
+                type="text" 
+                name="searchQuery"
+                value="{{ request('searchQuery') }}"
+                placeholder="Cari judul buku..." 
+                class="w-full px-4 py-2 rounded-full border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 bg-white/90"
+            >
+            <span class="absolute right-3 top-2.5 text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </span>
+        </form>
+    </div>
+</div>
+
 
                 <!-- Theme Toggle -->
                 <div class="flex items-center gap-4">
-                    <button 
-                        @click="darkMode = !darkMode"
-                        class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                        :class="{ 'bg-gray-100': darkMode }"
-                    >
-                        <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                        </svg>
-                        <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
-                        </svg>
-                    </button>
+                  
                     <button 
                         @click="showFilters = !showFilters"
-                        class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                        class="fixed p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
@@ -163,8 +156,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm text-gray-500">Jumlah pemba</p>
-                        <p class="text-lg font-semibold">1,287</p>
+                        <p class="text-sm text-gray-500">Jumlah Pembaca</p>
+                        <p class="text-lg font-semibold">{{ $jumlahPembaca }}</p>
                     </div>
                 </div>
             </div>
@@ -172,14 +165,14 @@
 
         <!-- Book Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 auto-rows-fr">
-    @foreach ($bukus as $buku)
+        @foreach ($bukus as $buku)
     <div class="book-card group">
         <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
             <!-- Cover Image Placeholder -->
             <div class="relative bg-gray-100 w-full h-64 overflow-hidden">
                 @if ($buku->sampul ?? false)
                 <img 
-                    src="{{ url('assets/sampul/' . $buku->sampul) }}" 
+                    src="{{ asset('assets/sampul/' . $buku->sampul) }}" 
                     alt="Sampul Buku" 
                     class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                 >
@@ -199,38 +192,35 @@
                 <!-- Book Category -->
                 <div class="mb-2">
                     <span class="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {{ $buku->kategori->nama_kategori ?? 'Tidak tersedia' }}
+                        {{ $buku->kategori_nama ?? 'Tidak tersedia' }}
                     </span>
                 </div>
 
                 <!-- Book Details -->
                 <p class="text-sm text-gray-600">
-                    <strong>Penulis:</strong> {{ $buku->selengkapnya->penulis ?? 'Tidak tersedia' }}<br>
-                    <strong>Penerbit:</strong> {{ $buku->selengkapnya->penerbit ?? 'Tidak tersedia' }}
-                </p>
+                <strong>Penulis:</strong> {{ $buku->penulis ?? 'Tidak tersedia' }}<br>
+                <strong>Penerbit:</strong> {{ $buku->penerbit ?? 'Tidak tersedia' }}<br>
+</p>
 
                 <!-- Synopsis -->
                 <p class="text-sm text-gray-600 mt-2 line-clamp-3 flex-grow">
-                    <strong>Sinopsis:</strong> {{ $buku->selengkapnya->sinopsis ?? 'Tidak tersedia' }}
+                <strong>Sinopsis:</strong> {{ $buku->sinopsis ?? 'Tidak tersedia' }}
                 </p>
 
                 <!-- Action Buttons -->
                 <div class="flex mt-4 space-x-2">
                     <button 
-                        class="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                        Lihat Detail
-                    </button>
-                    <button 
                         class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
                     >
-                        Tambah Wishlist
+                        Pinjam Buku
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    @endforeach
+@endforeach
+
+
 </div>
 
 
@@ -238,75 +228,103 @@
 
         <!-- Enhanced Pagination -->
         <div class="mt-8">
-            <div class="bg-white rounded-lg shadow px-4 py-3 flex items-center justify-between">
-                <div class="flex-1 flex justify-between sm:hidden">
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Previous
-                    </a>
-                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Next
-                    </a>
-                </div>
-                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm text-gray-700">
-                            Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of{' '}
-                            <span class="font-medium">97</span> results
-                        </p>
-                    </div>
-                    <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Previous</span>
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                1
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-blue-100">
-                                2
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                3
-                            </a>
-                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                                ...
+    <div class="bg-white rounded-lg shadow px-4 py-3 flex items-center justify-between">
+        <div class="flex-1 flex justify-between sm:hidden">
+            <!-- Previous Button -->
+            @if ($bukus->onFirstPage())
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white cursor-not-allowed">
+                    Previous
+                </span>
+            @else
+                <a href="{{ $bukus->previousPageUrl() }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Previous
+                </a>
+            @endif
+
+            <!-- Next Button -->
+            @if ($bukus->hasMorePages())
+                <a href="{{ $bukus->nextPageUrl() }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Next
+                </a>
+            @else
+                <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white cursor-not-allowed">
+                    Next
+                </span>
+            @endif
+        </div>
+
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Menampilkan {{ $bukus->firstItem() }} - {{ $bukus->lastItem() }} dari total {{ $bukus->total() }} buku.
+                </p>
+            </div>
+            <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <!-- Previous Button -->
+                    @if ($bukus->onFirstPage())
+                        <span class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 cursor-not-allowed">
+                            <span class="sr-only">Previous</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                    @else
+                        <a href="{{ $bukus->previousPageUrl() }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Previous</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    @endif
+
+                    <!-- Pagination Links -->
+                    @foreach ($bukus->links()->elements[0] as $page => $url)
+                        @if ($bukus->currentPage() == $page)
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                                {{ $page }}
                             </span>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                8
+                        @else
+                            <a href="{{ $url }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                {{ $page }}
                             </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                9
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                10
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Next</span>
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </a>
-                        </nav>
-                    </div>
-                </div>
+                        @endif
+                    @endforeach
+
+                    <!-- Next Button -->
+                    @if ($bukus->hasMorePages())
+                        <a href="{{ $bukus->nextPageUrl() }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Next</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    @else
+                        <span class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 cursor-not-allowed">
+                            <span class="sr-only">Next</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                    @endif
+                </nav>
             </div>
         </div>
+    </div>
+</div>
+
 
         <!-- Recommended Books Section -->
         <div class="mt-12 bg-white rounded-xl shadow-sm p-6">
     <h2 class="text-2xl font-bold text-gray-900 mb-6">Rekomendasi Untukmu</h2>
     <div class="relative">
         <div class="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
-            @foreach($bukus as $buku)
+            @foreach($rekomendasiBuku as $buku)
             <div class="flex-none w-48">
                 <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <!-- Gambar Sampul Buku -->
                     @if ($buku->sampul)
                     <img 
-                        src="{{ url('assets/sampul/' . $buku->sampul) }}" 
+                        src="{{ url('/assets/sampul/' . $buku->sampul) }}" 
                         alt="Cover Buku" 
                         class="w-full h-64 object-cover rounded-t-lg"
                     >
@@ -315,12 +333,8 @@
                         Tidak Ada Sampul
                     </div>
                     @endif
-
                     <div class="p-4">
-                        <!-- Judul Buku -->
                         <h3 class="font-medium text-gray-900 truncate">{{ $buku->judul }}</h3>
-                        
-                        <!-- Penulis Buku -->
                         <p class="text-sm text-gray-500">
                             {{ $buku->selengkapnya->penulis ?? 'Penulis Tidak Tersedia' }}
                         </p>
@@ -367,12 +381,7 @@
                                 placeholder="Email kamu" 
                                 class="flex-1 px-4 py-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
-                            <button 
-                                type="submit" 
-                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                Subscribe
-                            </button>
+                           
                         </form>
                     </div>
                 </div>

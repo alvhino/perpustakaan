@@ -15,41 +15,70 @@ class PerpusController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil parameter `sort` (default: 'newest') dan `category` (default: 'all') dari query string
         $sort = $request->input('sort', 'newest');
         $selectedCategory = $request->input('category', 'all');
+        $searchQuery = $request->input('searchQuery', ''); // Ambil query pencarian
     
-        // Query buku dengan relasi kategori
-        $bukus = Buku::with('kategori');
+        $selectedCategory = $selectedCategory === 'all' ? null : (int) $selectedCategory;
     
-        // Terapkan filter kategori jika dipilih
-        if ($selectedCategory !== 'all') {
-            $bukus = $bukus->whereHas('kategori', function ($query) use ($selectedCategory) {
-                $query->where('id', $selectedCategory);
-            });
-        }
+        $perPage = 6;
+        $currentPage = $request->input('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
     
-        // Terapkan sorting berdasarkan parameter `sort`
-        if ($sort === 'newest') {
-            $bukus = $bukus->orderBy('created_at', 'desc'); // Terbaru
-        } elseif ($sort === 'oldest') {
-            $bukus = $bukus->orderBy('created_at', 'asc'); // Terlama
-        }
+        // Modifikasi query untuk memfilter berdasarkan pencarian
+        $bukus = DB::select('
+            SELECT * FROM get_buku_with_kategori(:selectedCategory, :sortOrder, :limit, :offset, :searchQuery)
+        ', [
+            'selectedCategory' => $selectedCategory,
+            'sortOrder' => $sort,
+            'limit' => $perPage,
+            'offset' => $offset,
+            'searchQuery' => "%$searchQuery%",  // Menambahkan parameter pencarian
+        ]);
     
-        // Map data untuk decoding kolom JSON `selengkapnya`
-        $bukus = $bukus->get()->map(function ($buku) {
-            $buku->selengkapnya = json_decode($buku->selengkapnya);
-            return $buku;
-        });
-
-        $totalBuku = Buku::count();
+        $totalBuku = DB::select('
+            SELECT COUNT(*) AS total FROM get_buku_with_kategori(:selectedCategory, :sortOrder, NULL, NULL, :searchQuery)
+        ', [
+            'selectedCategory' => $selectedCategory,
+            'sortOrder' => $sort,
+            'searchQuery' => "%$searchQuery%",  // Menambahkan parameter pencarian
+        ])[0]->total;
     
-        // Ambil semua kategori
-        $categories = Kategori::all();
+        $categories = DB::select('SELECT * FROM kategori');
     
-        // Kirim data ke view
-        return view('perpus.index', compact('bukus', 'sort', 'categories', 'selectedCategory', 'totalBuku'));
+        $jumlahPembaca = DB::select('SELECT count_unique_readers() AS jumlah_pembaca')[0]->jumlah_pembaca;
+    
+        $bukus = new \Illuminate\Pagination\LengthAwarePaginator(
+            $bukus,
+            $totalBuku,
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+    
+        $rekomendasiBuku = DB::select('
+            SELECT b.*
+            FROM buku b
+            JOIN pinjam p ON b.id = p.id_buku
+            GROUP BY b.id
+            ORDER BY COUNT(p.id) DESC
+            LIMIT 6
+        ');
+    
+        return view('perpus.index', [
+            'bukus' => $bukus,
+            'sort' => $sort,
+            'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
+            'totalBuku' => $totalBuku,
+            'jumlahPembaca' => $jumlahPembaca,
+            'rekomendasiBuku' => $rekomendasiBuku,
+        ]);
     }
+    
     
     
 
