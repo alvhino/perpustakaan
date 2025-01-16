@@ -8,11 +8,7 @@ use App\Http\Controllers\PerpusController;
 use App\Http\Controllers\PinjamController;
 
 
-
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-});
-
+Route::get('/dashboard', [UserController::class, 'dashboard']);
 //login dan user
 Route::get('/', [UserController::class, 'login']);
 Route::post('/login', [UserController::class, 'loginpost']);
