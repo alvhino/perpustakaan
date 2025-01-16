@@ -227,10 +227,11 @@
                     <div class="flex mt-4 space-x-2">
     @if (in_array($buku->id, $pinjams))
         <!-- Tombol Kembalikan Buku -->
-        <form action="{{ route('perpus.kembalikan', $buku->id) }}" method="POST">
+        <form id="formKembalikan{{ $buku->id }}" action="{{ route('perpus.kembalikan', $buku->id) }}" method="POST">
             @csrf
             <button 
-                type="submit" 
+                type="button" 
+                onclick="confirmKembalikan({{ $buku->id }})"
                 class="px-4 py-2 text-green-500 border border-green-500 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
             >
                 Kembalikan Buku
@@ -238,10 +239,11 @@
         </form>
     @else
         <!-- Tombol Pinjam Buku -->
-        <form action="{{ route('perpus.pinjam', $buku->id) }}" method="POST">
+        <form id="formPinjam{{ $buku->id }}" action="{{ route('perpus.pinjam', $buku->id) }}" method="POST">
             @csrf
             <button 
-                type="submit" 
+                type="button" 
+                onclick="confirmPinjam({{ $buku->id }})"
                 class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
             >
                 Pinjam Buku
@@ -452,6 +454,7 @@
             </div>
         </footer>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // Smooth scroll behavior for anchor links
@@ -475,6 +478,38 @@
                 }
             }
         });
+
+        function confirmPinjam(id) {
+        Swal.fire({
+            title: 'Pinjam Buku?',
+            text: "Apakah Anda yakin ingin meminjam buku ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Pinjam!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('formPinjam' + id).submit();
+            }
+        });
+    }
+
+    function confirmKembalikan(id) {
+        Swal.fire({
+            title: 'Kembalikan Buku?',
+            text: "Apakah Anda yakin ingin mengembalikan buku ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Kembalikan!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('formKembalikan' + id).submit();
+            }
+        });
+    }
     </script>
 </body>
 </html>
