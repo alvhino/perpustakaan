@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Buku;
+use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\Kategori;
 use App\Models\Pinjam;
@@ -135,24 +136,41 @@ class PerpusController extends Controller
         //
     }
 
-    public function pinjamBuku($id)
-{
-    $user = auth()->user(); // Ambil data pengguna yang sedang login
-    $buku = Buku::findOrFail($id); // Ambil data buku berdasarkan ID
-
-    // Periksa apakah buku sudah dipinjam
-    if (Pinjam::where('id_buku', $buku->id)->where('status', 'pinjam')->exists()) {
-        return redirect()->back()->with('error', 'Buku ini sudah dipinjam.');
+    public function pinjamBuku(Request $request, $id)
+    {
+        // Periksa apakah session 'username' ada
+        if (!$request->session()->has('username')) {
+            return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+    
+        // Ambil username dari session
+        $username = $request->session()->get('username');
+    
+        // Cari user berdasarkan username
+        $user = User::where('username', $username)->first();
+    
+        // Periksa apakah user ditemukan
+        if (!$user) {
+            return redirect('/')->with('error', 'Pengguna tidak ditemukan.');
+        }
+    
+        // Ambil data buku berdasarkan ID
+        $buku = Buku::findOrFail($id);
+    
+        // Periksa apakah buku sudah dipinjam
+        if (Pinjam::where('id_buku', $buku->id)->where('status', 'pinjam')->exists()) {
+            return redirect()->back()->with('error', 'Buku ini sudah dipinjam.');
+        }
+    
+        // Buat data peminjaman
+        Pinjam::create([
+            'id_user' => $user->id, // ID pengguna yang ditemukan berdasarkan username
+            'id_buku' => $buku->id, // ID buku yang ingin dipinjam
+            'status' => 'pinjam',   // Status peminjaman
+        ]);
+    
+        return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
     }
-
-    // Buat data peminjaman
-    Pinjam::create([
-        'id_user' => $user->id, // ID pengguna yang sedang login
-        'id_buku' => $buku->id, // ID buku yang ingin dipinjam
-        'status' => 'pinjam', // Status peminjaman
-    ]);
-
-    return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
-}
+    
 
 }
