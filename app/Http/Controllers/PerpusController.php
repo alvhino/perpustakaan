@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Buku;
 use Illuminate\Support\Str;
 use App\Models\Kategori;
+use App\Models\Pinjam;
 use Illuminate\Support\Facades\DB;
 
 class PerpusController extends Controller
@@ -133,4 +134,25 @@ class PerpusController extends Controller
     {
         //
     }
+
+    public function pinjamBuku($id)
+{
+    $user = auth()->user(); // Ambil data pengguna yang sedang login
+    $buku = Buku::findOrFail($id); // Ambil data buku berdasarkan ID
+
+    // Periksa apakah buku sudah dipinjam
+    if (Pinjam::where('id_buku', $buku->id)->where('status', 'pinjam')->exists()) {
+        return redirect()->back()->with('error', 'Buku ini sudah dipinjam.');
+    }
+
+    // Buat data peminjaman
+    Pinjam::create([
+        'id_user' => $user->id, // ID pengguna yang sedang login
+        'id_buku' => $buku->id, // ID buku yang ingin dipinjam
+        'status' => 'pinjam', // Status peminjaman
+    ]);
+
+    return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
+}
+
 }

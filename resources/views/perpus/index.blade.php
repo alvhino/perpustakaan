@@ -180,60 +180,67 @@
 
         <!-- Book Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 auto-rows-fr">
-        @foreach ($bukus as $buku)
-    <div class="book-card group">
-        <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
-            <!-- Cover Image Placeholder -->
-            <div class="relative bg-gray-100 w-full h-64 overflow-hidden">
-                @if ($buku->sampul ?? false)
-                <img 
-                    src="{{ asset('assets/sampul/' . $buku->sampul) }}" 
-                    alt="Sampul Buku" 
-                    class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                >
-                @else
-                <div class="flex items-center justify-center h-full text-gray-400">
-                    <span>Tidak ada sampul</span>
-                </div>
-                @endif
-            </div>
-
-            <div class="p-4 flex flex-col flex-grow">
-                <!-- Book Title -->
-                <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
-                    {{ $buku->judul }}
-                </h3>
-
-                <!-- Book Category -->
-                <div class="mb-2">
-                    <span class="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {{ $buku->kategori_nama ?? 'Tidak tersedia' }}
-                    </span>
+    @foreach ($bukus as $buku)
+        <div class="book-card group">
+            <div class="relative bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+                <!-- Cover Image -->
+                <div class="relative bg-gray-100 w-full h-64 overflow-hidden">
+                    @if ($buku->sampul ?? false)
+                        <img 
+                            src="{{ asset('assets/sampul/' . $buku->sampul) }}" 
+                            alt="Sampul Buku" 
+                            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                        >
+                    @else
+                        <div class="flex items-center justify-center h-full text-gray-400">
+                            <span>Tidak ada sampul</span>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Book Details -->
-                <p class="text-sm text-gray-600">
-                <strong>Penulis:</strong> {{ $buku->penulis ?? 'Tidak tersedia' }}<br>
-                <strong>Penerbit:</strong> {{ $buku->penerbit ?? 'Tidak tersedia' }}<br>
-</p>
+                <div class="p-4 flex flex-col flex-grow">
+                    <!-- Book Title -->
+                    <h3 class="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
+                        {{ $buku->judul }}
+                    </h3>
 
-                <!-- Synopsis -->
-                <p class="text-sm text-gray-600 mt-2 line-clamp-3 flex-grow">
-                <strong>Sinopsis:</strong> {{ $buku->sinopsis ?? 'Tidak tersedia' }}
-                </p>
+                    <!-- Book Category -->
+                    <div class="mb-2">
+                        <span class="inline-block px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                            {{ $buku->kategori_nama ?? 'Tidak tersedia' }}
+                        </span>
+                    </div>
 
-                <!-- Action Buttons -->
-                <div class="flex mt-4 space-x-2">
-                    <button 
-                        class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
-                    >
-                        Pinjam Buku
-                    </button>
+                    <!-- Additional Book Information -->
+                    <p class="text-sm text-gray-600">
+                        <strong>Penulis:</strong> {{ $buku->penulis ?? 'Tidak tersedia' }}<br>
+                        <strong>Penerbit:</strong> {{ $buku->penerbit ?? 'Tidak tersedia' }}
+                    </p>
+
+                    <!-- Synopsis -->
+                    <p class="text-sm text-gray-600 mt-2 line-clamp-3 flex-grow">
+                        <strong>Sinopsis:</strong> {{ $buku->sinopsis ?? 'Tidak tersedia' }}
+                    </p>
+
+                    <!-- Action Buttons -->
+                    <div class="flex mt-4 space-x-2">
+                        <form action="{{ route('perpus.pinjam', $buku->id) }}" method="POST">
+                            @csrf
+                            <button 
+                                type="submit" 
+                                class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+                            >
+                                Pinjam Buku
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-@endforeach
+    @endforeach
+</div>
+
 
 
 </div>
