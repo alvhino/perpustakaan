@@ -20,6 +20,8 @@ Route::get('/user/{id}/delete', [UserController::class, 'destroy'])->name('user.
 //halaman awal
 Route::get('/perpus', [PerpusController::class, 'index'])->name('perpus.index');
 Route::post('/perpus/{id}/pinjam', [PerpusController::class, 'pinjamBuku'])->name('perpus.pinjam');
+Route::post('/buku/kembalikan/{id}', [PerpusController::class, 'kembalikanBuku'])->name('perpus.kembalikan');
+
 
 
 

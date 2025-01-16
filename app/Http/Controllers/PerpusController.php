@@ -18,8 +18,9 @@ class PerpusController extends Controller
     public function index(Request $request)
     {
         if (!$request->session()->has('username')) {
-            return redirect('/');
+            return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
         }
+    
         $username = $request->session()->get('username');
         $sort = $request->input('sort', 'newest');
         $selectedCategory = $request->input('category', 'all');
@@ -31,6 +32,13 @@ class PerpusController extends Controller
         $currentPage = $request->input('page', 1);
         $offset = ($currentPage - 1) * $perPage;
     
+        // Dapatkan user berdasarkan username
+        $user = DB::table('user')->where('username', $username)->first();
+        if (!$user) {
+            return redirect('/')->with('error', 'Pengguna tidak ditemukan.');
+        }
+    
+        // Dapatkan daftar buku
         $bukus = DB::select('
             SELECT * FROM get_buku_with_kategori(:selectedCategory, :sortOrder, :limit, :offset, :searchQuery)
         ', [
@@ -41,6 +49,7 @@ class PerpusController extends Controller
             'searchQuery' => "%$searchQuery%",
         ]);
     
+        // Total jumlah buku
         $totalBuku = DB::select('
             SELECT COUNT(*) AS total FROM get_buku_with_kategori(:selectedCategory, :sortOrder, NULL, NULL, :searchQuery)
         ', [
@@ -49,10 +58,13 @@ class PerpusController extends Controller
             'searchQuery' => "%$searchQuery%",  
         ])[0]->total;
     
+        // Daftar kategori
         $categories = DB::select('SELECT * FROM kategori');
     
+        // Jumlah pembaca unik
         $jumlahPembaca = DB::select('SELECT count_unique_readers() AS jumlah_pembaca')[0]->jumlah_pembaca;
     
+        // Data pagination
         $bukus = new \Illuminate\Pagination\LengthAwarePaginator(
             $bukus,
             $totalBuku,
@@ -64,6 +76,7 @@ class PerpusController extends Controller
             ]
         );
     
+        // Rekomendasi buku
         $rekomendasiBuku = DB::select('
             SELECT b.*
             FROM buku b
@@ -72,6 +85,13 @@ class PerpusController extends Controller
             ORDER BY COUNT(p.id) DESC
             LIMIT 6
         ');
+    
+        // Dapatkan ID buku yang sedang dipinjam oleh user
+        $pinjams = DB::table('pinjam')
+            ->where('id_user', $user->id)
+            ->where('status', 'pinjam')
+            ->pluck('id_buku')
+            ->toArray();
     
         return view('perpus.index', [
             'bukus' => $bukus,
@@ -82,8 +102,10 @@ class PerpusController extends Controller
             'jumlahPembaca' => $jumlahPembaca,
             'rekomendasiBuku' => $rekomendasiBuku,
             'username' => $username,
+            'pinjams' => $pinjams, // Daftar ID buku yang sedang dipinjam
         ]);
     }
+    
     
     
     
@@ -172,5 +194,35 @@ class PerpusController extends Controller
         return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
     }
     
+    public function kembalikanBuku(Request $request, $id)
+{
+    if (!$request->session()->has('username')) {
+        return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
+    }
+
+    $username = $request->session()->get('username');
+    $user = DB::table('user')->where('username', $username)->first();
+
+    if (!$user) {
+        return redirect('/')->with('error', 'Pengguna tidak ditemukan.');
+    }
+
+    $pinjam = DB::table('pinjam')
+        ->where('id_user', $user->id)
+        ->where('id_buku', $id)
+        ->where('status', 'pinjam')
+        ->first();
+
+    if (!$pinjam) {
+        return redirect()->back()->with('error', 'Buku ini belum dipinjam.');
+    }
+
+    DB::table('pinjam')
+        ->where('id', $pinjam->id)
+        ->update(['status' => 'kembali']);
+
+    return redirect()->back()->with('success', 'Buku berhasil dikembalikan.');
+}
+
 
 }

@@ -225,16 +225,31 @@
 
                     <!-- Action Buttons -->
                     <div class="flex mt-4 space-x-2">
-                        <form action="{{ route('perpus.pinjam', $buku->id) }}" method="POST">
-                            @csrf
-                            <button 
-                                type="submit" 
-                                class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
-                            >
-                                Pinjam Buku
-                            </button>
-                        </form>
-                    </div>
+    @if (in_array($buku->id, $pinjams))
+        <!-- Tombol Kembalikan Buku -->
+        <form action="{{ route('perpus.kembalikan', $buku->id) }}" method="POST">
+            @csrf
+            <button 
+                type="submit" 
+                class="px-4 py-2 text-green-500 border border-green-500 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+            >
+                Kembalikan Buku
+            </button>
+        </form>
+    @else
+        <!-- Tombol Pinjam Buku -->
+        <form action="{{ route('perpus.pinjam', $buku->id) }}" method="POST">
+            @csrf
+            <button 
+                type="submit" 
+                class="px-4 py-2 text-red-500 border border-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+            >
+                Pinjam Buku
+            </button>
+        </form>
+    @endif
+</div>
+
                 </div>
             </div>
         </div>
