@@ -169,7 +169,7 @@ class PerpusController extends Controller
         $username = $request->session()->get('username');
     
         // Cari user berdasarkan username
-        $user = User::where('username', $username)->first();
+        $user = DB::table('user')->where('username', $username)->first();
     
         // Periksa apakah user ditemukan
         if (!$user) {
@@ -179,50 +179,64 @@ class PerpusController extends Controller
         // Ambil data buku berdasarkan ID
         $buku = Buku::findOrFail($id);
     
-        // Periksa apakah buku sudah dipinjam
-        if (Pinjam::where('id_buku', $buku->id)->where('status', 'pinjam')->exists()) {
-            return redirect()->back()->with('error', 'Buku ini sudah dipinjam.');
-        }
+        // Cek apakah sudah ada record untuk buku ini dan user ini
+        $pinjam = DB::table('pinjam')
+            ->where('id_user', $user->id)
+            ->where('id_buku', $id)
+            ->first();
     
-        // Buat data peminjaman
-        Pinjam::create([
-            'id_user' => $user->id, // ID pengguna yang ditemukan berdasarkan username
-            'id_buku' => $buku->id, // ID buku yang ingin dipinjam
-            'status' => 'pinjam',   // Status peminjaman
-        ]);
+        if ($pinjam) {
+            if ($pinjam->status === 'pinjam') {
+                return redirect()->back()->with('error', 'Buku ini sudah dipinjam.');
+            }
+    
+            // Perbarui status jika sebelumnya statusnya 'kembali'
+            DB::table('pinjam')
+                ->where('id', $pinjam->id)
+                ->update(['status' => 'pinjam']);
+        } else {
+            // Insert data baru jika belum ada
+            DB::table('pinjam')->insert([
+                'id_user' => $user->id,
+                'id_buku' => $buku->id,
+                'status' => 'pinjam',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     
         return redirect()->back()->with('success', 'Buku berhasil dipinjam.');
     }
     
     public function kembalikanBuku(Request $request, $id)
-{
-    if (!$request->session()->has('username')) {
-        return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
+    {
+        if (!$request->session()->has('username')) {
+            return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+    
+        $username = $request->session()->get('username');
+        $user = DB::table('user')->where('username', $username)->first();
+    
+        if (!$user) {
+            return redirect('/')->with('error', 'Pengguna tidak ditemukan.');
+        }
+    
+        $pinjam = DB::table('pinjam')
+            ->where('id_user', $user->id)
+            ->where('id_buku', $id)
+            ->where('status', 'pinjam')
+            ->first();
+    
+        if (!$pinjam) {
+            return redirect()->back()->with('error', 'Buku ini belum dipinjam.');
+        }
+    
+        // Ubah status menjadi 'kembali'
+        DB::table('pinjam')
+            ->where('id', $pinjam->id)
+            ->update(['status' => 'kembali', 'updated_at' => now()]);
+    
+        return redirect()->back()->with('success', 'Buku berhasil dikembalikan.');
     }
-
-    $username = $request->session()->get('username');
-    $user = DB::table('user')->where('username', $username)->first();
-
-    if (!$user) {
-        return redirect('/')->with('error', 'Pengguna tidak ditemukan.');
-    }
-
-    $pinjam = DB::table('pinjam')
-        ->where('id_user', $user->id)
-        ->where('id_buku', $id)
-        ->where('status', 'pinjam')
-        ->first();
-
-    if (!$pinjam) {
-        return redirect()->back()->with('error', 'Buku ini belum dipinjam.');
-    }
-
-    DB::table('pinjam')
-        ->where('id', $pinjam->id)
-        ->update(['status' => 'kembali']);
-
-    return redirect()->back()->with('success', 'Buku berhasil dikembalikan.');
-}
-
-
+    
 }
