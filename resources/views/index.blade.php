@@ -1,3 +1,4 @@
+{{-- resources/views/login.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,91 +8,124 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        .floating-label {
+            position: absolute;
+            pointer-events: none;
+            left: 12px;
+            top: 8px;
+            transition: 0.2s ease all;
+            color: #9CA3AF;
+        }
+
+        .input-field:focus ~ .floating-label,
+        .input-field:not(:placeholder-shown) ~ .floating-label {
+            transform: translateY(-20px) scale(0.85);
+            color: #3B82F6;
+            background-color: white;
+            padding: 0 4px;
+        }
+
+        .login-card {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .wave {
+            animation: wave 8s linear infinite;
+            opacity: 0.4;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: -2s;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .hover-3d {
+            transition: transform 0.3s ease-out;
+        }
+
+        .hover-3d:hover {
+            transform: translateY(-5px) scale(1.005);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-r from-blue-500 to-purple-600">
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md animate__animated animate__fadeIn">
+<body class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
+    <!-- Animated Background Waves -->
+    <div class="absolute inset-0 overflow-hidden opacity-30">
+        <div class="wave absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+        <div class="wave absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="login-card p-8 rounded-2xl shadow-2xl w-full max-w-md animate__animated animate__fadeIn hover-3d">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-800">Welcome Back!</h1>
-                <p class="text-gray-600 mt-2">Please sign in to continue</p>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Welcome Back!
+                </h1>
+                <p class="text-gray-600 mt-2">Enter your credentials to continue</p>
             </div>
 
-            <form method="POST" action="{{ url('/login') }}" id="loginForm" class="space-y-6">
+            <form method="POST" action="{{url('/login')}}" id="loginForm" class="space-y-6">
                 @csrf
 
-                @if ($errors->any())
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative animate__animated animate__shake" role="alert">
-                        <strong class="font-bold">Oops!</strong>
-                        <span class="block sm:inline">Please check your credentials.</span>
-                    </div>
+                @if (session('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded animate__animated animate__shakeX" role="alert">
+                    <p>{{ session('error') }}</p>
+                </div>
                 @endif
 
-                <div class="space-y-2">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <div class="space-y-1">
                     <div class="relative">
-                        <input type="email" 
-                               name="email" 
-                               id="email"
-                               value="{{ old('email') }}"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 @error('email') border-red-500 @enderror"
-                               required
-                               autocomplete="email"
-                               autofocus>
-                        <div class="input-icon">
-                            <svg class="w-5 h-5 text-gray-400 absolute right-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                        <input type="text" 
+                               name="username" 
+                               id="username"
+                               class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 placeholder-transparent"
+                               required 
+                               autocomplete="username"
+                               placeholder="Username">
+                        <label for="username" class="floating-label">Username</label>
+                        <div class="absolute right-3 top-3 text-gray-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
                     </div>
-                    @error('email')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <div class="space-y-1">
                     <div class="relative">
                         <input type="password" 
                                name="password" 
                                id="password"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 @error('password') border-red-500 @enderror"
-                               required>
-                        <div class="input-icon cursor-pointer toggle-password">
-                            <svg class="w-5 h-5 text-gray-400 absolute right-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="input-field w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 placeholder-transparent"
+                               required
+                               placeholder="Password">
+                        <label for="password" class="floating-label">Password</label>
+                        <button type="button" 
+                                class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors duration-200 toggle-password">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
-                        </div>
+                        </button>
                     </div>
-                    @error('password')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input type="checkbox" name="remember" id="remember" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
-                    </div>
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:text-blue-800 transition duration-200">
-                            Forgot password?
-                        </a>
-                    @endif
-                </div>
-
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
-                    Sign in
+                <button type="submit" 
+                        class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                    <span class="flex items-center justify-center">
+                        <span>Sign in</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                    </span>
                 </button>
-
-                <div class="text-center mt-4">
-                    <p class="text-sm text-gray-600">
-                        Don't have an account? 
-                        <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500 transition duration-200">
-                            Sign up
-                        </a>
-                    </p>
-                </div>
             </form>
         </div>
     </div>
@@ -104,7 +138,6 @@
                 const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
                 passwordInput.attr('type', type);
                 
-                // Change icon based on password visibility
                 const icon = $(this).find('svg');
                 if (type === 'password') {
                     icon.html('<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />');
@@ -113,12 +146,12 @@
                 }
             });
 
-            // Form validation animation
+            // Form validation with animation
             $('#loginForm').on('submit', function(e) {
-                const email = $('#email').val();
+                const username = $('#username').val();
                 const password = $('#password').val();
                 
-                if (!email || !password) {
+                if (!username || !password) {
                     e.preventDefault();
                     $(this).addClass('animate__animated animate__shakeX');
                     setTimeout(() => {
@@ -127,12 +160,10 @@
                 }
             });
 
-            // Input focus effects
-            $('input').focus(function() {
-                $(this).parent().parent().addClass('transform scale-105');
-            }).blur(function() {
-                $(this).parent().parent().removeClass('transform scale-105');
-            });
+            // Floating label animation
+            $('.input-field').on('focus blur', function(e) {
+                $(this).parent().toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
+            }).trigger('blur');
         });
     </script>
 </body>
