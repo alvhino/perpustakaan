@@ -17,7 +17,7 @@ class PerpusController extends Controller
     {
         $sort = $request->input('sort', 'newest');
         $selectedCategory = $request->input('category', 'all');
-        $searchQuery = $request->input('searchQuery', ''); // Ambil query pencarian
+        $searchQuery = $request->input('searchQuery', ''); 
     
         $selectedCategory = $selectedCategory === 'all' ? null : (int) $selectedCategory;
     
@@ -25,7 +25,6 @@ class PerpusController extends Controller
         $currentPage = $request->input('page', 1);
         $offset = ($currentPage - 1) * $perPage;
     
-        // Modifikasi query untuk memfilter berdasarkan pencarian
         $bukus = DB::select('
             SELECT * FROM get_buku_with_kategori(:selectedCategory, :sortOrder, :limit, :offset, :searchQuery)
         ', [
@@ -33,7 +32,7 @@ class PerpusController extends Controller
             'sortOrder' => $sort,
             'limit' => $perPage,
             'offset' => $offset,
-            'searchQuery' => "%$searchQuery%",  // Menambahkan parameter pencarian
+            'searchQuery' => "%$searchQuery%",
         ]);
     
         $totalBuku = DB::select('
@@ -41,7 +40,7 @@ class PerpusController extends Controller
         ', [
             'selectedCategory' => $selectedCategory,
             'sortOrder' => $sort,
-            'searchQuery' => "%$searchQuery%",  // Menambahkan parameter pencarian
+            'searchQuery' => "%$searchQuery%",  
         ])[0]->total;
     
         $categories = DB::select('SELECT * FROM kategori');

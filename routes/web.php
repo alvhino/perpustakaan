@@ -5,8 +5,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PerpusController;
-
-
+use App\Http\Controllers\PinjamController;
 
 
 Route::get('/', function () {
@@ -43,3 +42,11 @@ Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.s
 Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
 Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
 Route::get('/kategori/{id}/delete', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+
+Route::get('/pinjam', [PinjamController::class, 'index']);
+Route::get('/pinjam/tambah', [PinjamController::class, 'create']);
+Route::post('/pinjam/tambah', [PinjamController::class, 'store']);
+Route::get('/pinjam/edit/{id}', [PinjamController::class, 'edit']);
+Route::post('/pinjam/update/{id}', [PinjamController::class, 'update']);
+Route::get('/pinjam/hapus/{id}', [PinjamController::class, 'destroy']);
+
