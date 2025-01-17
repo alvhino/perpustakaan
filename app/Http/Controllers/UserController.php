@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Pinjam;
+use App\Models\Buku;
 
 class UserController extends Controller
 {
@@ -22,12 +24,22 @@ class UserController extends Controller
     }
     
     public function dashboard(Request $request)
-    {
-        if (!$request->session()->has('username')) {
-            return redirect('/');
-        }
-        return view('template.index');
+{
+    if (!$request->session()->has('username')) {
+        return redirect('/')->with('error', 'Anda harus login terlebih dahulu.');
     }
+
+    // Ambil username dari session
+    $username = $request->session()->get('username');
+
+    // Hitung data statistik
+    $jumlahBuku = Buku::count();
+    $jumlahUser = User::count();
+    $jumlahPinjam = Pinjam::where('status', 'pinjam')->count();
+
+    return view('dashboard.index', compact('username', 'jumlahBuku', 'jumlahUser', 'jumlahPinjam'));
+}
+
     public function loginpost(Request $request)
     {
         // Validasi input
