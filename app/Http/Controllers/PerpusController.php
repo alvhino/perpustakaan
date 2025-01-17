@@ -78,13 +78,16 @@ class PerpusController extends Controller
     
         // Rekomendasi buku
         $rekomendasiBuku = DB::select('
-            SELECT b.*
-            FROM buku b
-            JOIN pinjam p ON b.id = p.id_buku
-            GROUP BY b.id
-            ORDER BY COUNT(p.id) DESC
-            LIMIT 6
-        ');
+    SELECT 
+        b.*, 
+        b.selengkapnya->>\'penulis\' AS penulis
+    FROM buku b
+    JOIN pinjam pj ON b.id = pj.id_buku
+    GROUP BY b.id
+    ORDER BY COUNT(pj.id) DESC
+    LIMIT 6
+');
+
     
         // Dapatkan ID buku yang sedang dipinjam oleh user
         $pinjams = DB::table('pinjam')

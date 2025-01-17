@@ -375,7 +375,7 @@
                     <div class="p-4">
                         <h3 class="font-medium text-gray-900 truncate">{{ $buku->judul }}</h3>
                         <p class="text-sm text-gray-500">
-                            {{ $buku->selengkapnya->penulis ?? 'Penulis Tidak Tersedia' }}
+                        Penulis : {{ $buku->penulis ?? 'Tidak tersedia' }}
                         </p>
                     </div>
                 </div>
