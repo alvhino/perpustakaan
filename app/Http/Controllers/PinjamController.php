@@ -88,15 +88,24 @@ class PinjamController extends Controller
         return redirect('/pinjam')->with('success', 'Data pinjam berhasil dihapus.');
     }
 
-    public function updateStatus($id)
-{
-    $pinjam = Pinjam::findOrFail($id);
-
-    // Ubah status menjadi "dikembalikan"
-    $pinjam->status = 'kembali';
-    $pinjam->save();
-
-    return redirect('/pinjam')->with('success', 'Status berhasil diperbarui menjadi Dikembalikan.');
-}
+    public function updateStatus(Request $request, $id)
+    {
+        // Temukan data pinjaman berdasarkan ID
+        $pinjam = Pinjam::findOrFail($id);
+    
+        // Ubah status berdasarkan kondisi saat ini
+        if ($pinjam->status === 'kembali') {
+            $pinjam->status = 'pinjam'; // Ubah status menjadi 'pinjam'
+        } else {
+            $pinjam->status = 'kembali'; // Ubah status menjadi 'kembali'
+        }
+    
+        // Simpan perubahan ke database
+        $pinjam->save();
+    
+        // Redirect dengan pesan sukses
+        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
+    }
+    
 
 }
