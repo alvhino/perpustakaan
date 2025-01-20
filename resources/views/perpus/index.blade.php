@@ -157,7 +157,7 @@
                     </div>
                     <div class="ml-4">
 
-                        <p class="text-sm text-gray-500">Jumlah Pembaca</p>
+                        <p class="text-sm text-gray-500">Jumlah Peminjam</p>
                         <p class="text-lg font-semibold">{{ $jumlahPembaca }}</p>
                     </div>
                 </div>
